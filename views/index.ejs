@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Product List</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Product List</h1>
+    <a href="/add" class="btn btn-primary mb-3">Add New Product</a>
+    <a href="/logout" class="btn btn-danger mb-3 float-right">Logout</a>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Availability</th>
+          <th>Picture</th>
+          <th>Brochure</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach((product) => { %>
+          <tr>
+            <td><%= product.id %></td>
+            <td><%= product.name %></td>
+            <td><%= product.price %></td>
+            <td><%= product.availability %></td>
+            <td>
+              <% if (product.picture) { %>
+                <img src="/uploads/<%= product.picture %>" width="100">
+              <% } %>
+            </td>
+            <td>
+              <% if (product.brochure) { %>
+                <a href="/uploads/<%= product.brochure %>" target="_blank">View</a>
+              <% } %>
+            </td>
+            <td>
+              <a href="/edit/<%= product.id %>" class="btn btn-warning">Edit</a>
+              <button class="btn btn-danger delete-btn" data-id="<%= product.id %>">Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    document.querySelectorAll('.delete-btn').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        const id = btn.getAttribute('data-id');
+        const response = await fetch(`/delete/${id}`, { method: 'POST' });
+        if (response.ok) {
+          location.reload();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
